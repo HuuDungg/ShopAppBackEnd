@@ -9,6 +9,7 @@ import com.example.shopAppSpringBoot.responses.ProductResponse;
 import com.example.shopAppSpringBoot.responses.ProductlistResponse;
 import com.example.shopAppSpringBoot.services.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -92,6 +93,25 @@ public class ProductController {
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok("delete successfully " + id);
+    }
+
+    @PostMapping("/images/{imageName}")
+    public ResponseEntity<?> viewImage(@PathVariable("imageName")String imageName){
+            try {
+                Path imagePath = Paths.get(UPLOAD_FOLDER + "/" + imageName);
+                UrlResource urlResource = new UrlResource(imagePath.toUri());
+                if( urlResource.exists()){
+                    return ResponseEntity.ok()
+                            .contentType(MediaType.IMAGE_JPEG)
+                            .body(urlResource);
+                }else {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Image not found");
+                }
+            }catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is null");
+            }
+
+
     }
 
     @PostMapping(value = "/saveFiles/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
