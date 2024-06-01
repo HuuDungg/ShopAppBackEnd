@@ -42,7 +42,7 @@ public class UserService implements IUserService{
                 .googleAccountId(userDTO.getGoogleAccountId())
                 .build();
 
-        Role role = roleRepository.findById(userDTO.getRoleId()).orElseThrow(
+        Role role = roleRepository.findById(1L).orElseThrow(
                 () -> new DataNotFoundException("not found role id")
         );
         user.setRole(role);

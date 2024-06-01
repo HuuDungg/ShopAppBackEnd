@@ -1,5 +1,6 @@
 package com.example.shopAppSpringBoot.conponents;
 
+import com.example.shopAppSpringBoot.models.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -33,29 +33,35 @@ public class JwtTokenFilters extends OncePerRequestFilter{
             @NotNull HttpServletResponse response,
             @NotNull FilterChain filterChain) throws ServletException, IOException
     {
-        //enable bypass
-        if (isBypassToken(request)){
-            filterChain.doFilter(request, response);//enable bypass
-            return;
-        }
-        final String authHeader = request.getHeader("Authorization");
-        if (authHeader != null || authHeader.startsWith("Bearer ")){
-            final String token = authHeader.substring(7);
-            final String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
-            System.out.println("day la phone numbber " + phoneNumber);
-            if(phoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null){
-               UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNumber);
-                if(jwtTokenUtil.vailidateToken(token, userDetails)){
-                    UsernamePasswordAuthenticationToken authenticationToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails,
-                                    null,
-                                    userDetails.getAuthorities()
-                            );
+        try {
+            if (isBypassToken(request)){
+                filterChain.doFilter(request, response);//enable bypass
+                return;
+            }
+            final String authHeader = request.getHeader("Authorization");
+
+            if (authHeader != null || authHeader.startsWith("Bearer ")){
+
+                final String token = authHeader.substring(7);
+                final String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
+
+                System.out.println("day la phone numbber " + phoneNumber);
+                if(phoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                    User user = (User) userDetailsService.loadUserByUsername(phoneNumber);
+                    if(jwtTokenUtil.vailidateToken(token, user)){
+                        UsernamePasswordAuthenticationToken authenticationToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        user,
+                                        null,
+                                        user.getAuthorities()
+                                );
+                    }
                 }
             }
+            filterChain.doFilter(request, response);//enable bypass
+        }catch (Exception e){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
-        filterChain.doFilter(request, response);//enable bypass
     }
 
 
