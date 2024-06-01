@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 @CrossOrigin("http://localhost:4200/")
 @RestController
-@RequestMapping("${api.prefix}/role")
+@RequestMapping("${api.prefix}/roles")
 @RequiredArgsConstructor
 public class RoleController {
     private final RoleService roleService;

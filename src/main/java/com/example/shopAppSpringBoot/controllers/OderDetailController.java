@@ -1,6 +1,5 @@
 package com.example.shopAppSpringBoot.controllers;
 
-import com.example.shopAppSpringBoot.dtos.CategoryDTO;
 import com.example.shopAppSpringBoot.dtos.OrderDetailDTO;
 import com.example.shopAppSpringBoot.exceptions.DataNotFoundException;
 import com.example.shopAppSpringBoot.models.OrderDetail;
@@ -8,15 +7,14 @@ import com.example.shopAppSpringBoot.services.OrderDetailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("${api.prefix}/orderDetail")
+@RequestMapping("${api.prefix}/orderDetails")
 @RequiredArgsConstructor
-public class OderDdetailController {
+public class OderDetailController {
     //injection dependencies
     private final OrderDetailService orderDetailService;
     //display all category

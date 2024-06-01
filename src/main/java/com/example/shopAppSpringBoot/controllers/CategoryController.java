@@ -15,7 +15,7 @@ import java.util.List;
 //dependency injection
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/category")
+@RequestMapping("${api.prefix}/categories")
 public class CategoryController {
     private final CategoryService categoryService;
 
