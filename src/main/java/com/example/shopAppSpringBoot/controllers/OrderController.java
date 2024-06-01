@@ -22,7 +22,7 @@ public class OrderController {
 
     //display all category
     @GetMapping("/getAllOrder")
-    public ResponseEntity<List<OrderResponse>> getAllOrder(@RequestParam("page") int page, @RequestParam("limit") int limit){
+    public ResponseEntity<List<OrderResponse>> getAllOrder(@RequestParam(name = "page", defaultValue = "1") int page, @RequestParam(name = "limit", defaultValue = "3") int limit){
         List<OrderResponse> orderResponses = oderService.getAllOrders();
         return ResponseEntity.ok(orderResponses);
     }

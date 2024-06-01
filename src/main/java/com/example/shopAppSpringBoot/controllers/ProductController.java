@@ -95,7 +95,7 @@ public class ProductController {
         return ResponseEntity.ok("delete successfully " + id);
     }
 
-    @PostMapping("/images/{imageName}")
+    @GetMapping("/images/{imageName}")
     public ResponseEntity<?> viewImage(@PathVariable("imageName")String imageName){
             try {
                 Path imagePath = Paths.get(UPLOAD_FOLDER + "/" + imageName);

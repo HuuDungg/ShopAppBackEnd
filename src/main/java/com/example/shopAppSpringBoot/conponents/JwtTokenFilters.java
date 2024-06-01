@@ -8,7 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.*;
@@ -32,14 +35,27 @@ public class JwtTokenFilters extends OncePerRequestFilter{
     {
         //enable bypass
         if (isBypassToken(request)){
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);//enable bypass
             return;
         }
         final String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || authHeader.startsWith("Bearer ")){
+        if (authHeader != null || authHeader.startsWith("Bearer ")){
             final String token = authHeader.substring(7);
             final String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
+            System.out.println("day la phone numbber " + phoneNumber);
+            if(phoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null){
+               UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNumber);
+                if(jwtTokenUtil.vailidateToken(token, userDetails)){
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails,
+                                    null,
+                                    userDetails.getAuthorities()
+                            );
+                }
+            }
         }
+        filterChain.doFilter(request, response);//enable bypass
     }
 
 
@@ -48,12 +64,10 @@ public class JwtTokenFilters extends OncePerRequestFilter{
                 Pair.of(apiPrefix+"/user/register","POST"),
                 Pair.of(apiPrefix+"/user/login","POST"),
                 Pair.of(apiPrefix+"/category","GET"),
-                Pair.of(apiPrefix+"/product","GET"),
-                Pair.of(apiPrefix+"/order","GET"),
-                Pair.of(apiPrefix+"/orderDetail","GET")
+                Pair.of(apiPrefix+"/product","GET")
         );
         for (Pair<String, String> bypassToken : bypassTokens){
-            if (request.getServletPath().contains(bypassToken.getFirst()) ||
+            if (request.getServletPath().contains(bypassToken.getFirst()) &&
                     request.getMethod().equals(bypassToken.getSecond())
             ){
                 return true;
