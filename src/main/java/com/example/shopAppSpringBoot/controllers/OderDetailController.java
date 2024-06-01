@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("${api.prefix}/orderDetails")
+@RequestMapping("${api.prefix}/order_details")
 @RequiredArgsConstructor
 public class OderDetailController {
     //injection dependencies
