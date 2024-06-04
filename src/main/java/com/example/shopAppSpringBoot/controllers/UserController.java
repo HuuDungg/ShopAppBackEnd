@@ -2,6 +2,7 @@ package com.example.shopAppSpringBoot.controllers;
 
 import com.example.shopAppSpringBoot.dtos.UserDTO;
 import com.example.shopAppSpringBoot.dtos.UserLoginDTO;
+import com.example.shopAppSpringBoot.responses.LoginResponse;
 import com.example.shopAppSpringBoot.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +18,29 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO){
         try {
-            userService.createUser(userDTO);
-            return ResponseEntity.ok("Register success");
+
+            return ResponseEntity.ok(userService.createUser(userDTO));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
+    public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody UserLoginDTO userLoginDTO
     ){
         try {
             String token = userService.login(userLoginDTO.getPhoneNumber(), userLoginDTO.getPassword());
-            return ResponseEntity.ok(token);
+            LoginResponse loginResponse = LoginResponse.builder()
+                    .message("login successfully")
+                    .token(token)
+                    .build();
+            return ResponseEntity.ok(loginResponse);
         }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            LoginResponse loginResponse = LoginResponse.builder()
+                    .message("login fail with " + e.getMessage())
+                    .build();
+            return ResponseEntity.badRequest().body(loginResponse);
         }
 
     }

@@ -21,7 +21,7 @@ public class RoleController {
     private final RoleService roleService;
 
     @GetMapping("/getAllRoles")
-    public ResponseEntity<?> getAllRole() throws DataNotFoundException {
+    public ResponseEntity<List<Role>> getAllRole() throws DataNotFoundException {
 
         return ResponseEntity.ok().body(roleService.getAllRole());
     }
