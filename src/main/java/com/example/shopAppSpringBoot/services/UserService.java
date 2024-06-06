@@ -13,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class UserService implements IUserService{
     private final AuthenticationManager authenticationManager;
 
     @Override
+    @Transactional
     public User createUser(UserDTO userDTO) throws DataNotFoundException {
         //kiem tra xem trung so dien thoai khong
         if(userRepository.existsByPhoneNumber(userDTO.getPhoneNumber())){
@@ -57,7 +59,7 @@ public class UserService implements IUserService{
 
         return user;
     }
-
+    @Transactional
     @Override
     public String login(String phoneNumber, String password) throws DataNotFoundException {
        Optional<User> optionalUser = userRepository.findByPhoneNumber(phoneNumber);

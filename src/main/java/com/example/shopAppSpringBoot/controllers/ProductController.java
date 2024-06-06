@@ -45,7 +45,7 @@ public class ProductController {
         PageRequest pageRequest = PageRequest.of(
                 page,
                 limit,
-                Sort.by("createdAt").descending()
+                Sort.by("id").descending()
         );
 
         Page<ProductResponse> productPage = productService.getAllProducts(pageRequest);

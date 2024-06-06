@@ -9,6 +9,7 @@ import com.example.shopAppSpringBoot.responses.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    @Transactional
     @Override
     public Order createOrder(OrderDTO orderDTO) {
         Order order = Order
@@ -59,7 +61,7 @@ public class OrderService implements IOrderService {
 
         return orderResponse;
     }
-
+    @Transactional
     @Override
     public Order updateOrder(Long id, OrderDTO orderDTO) {
         Order order = orderRepository.findById(id).get();
@@ -74,7 +76,7 @@ public class OrderService implements IOrderService {
         order.setPaymentMethod(orderDTO.getPaymentMethod());
         return orderRepository.save(order);
     }
-
+    @Transactional
     @Override
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);

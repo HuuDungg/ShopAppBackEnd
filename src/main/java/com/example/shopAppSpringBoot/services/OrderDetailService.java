@@ -8,6 +8,7 @@ import com.example.shopAppSpringBoot.reposotories.OrderRepository;
 import com.example.shopAppSpringBoot.reposotories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 @Service
@@ -22,7 +23,7 @@ public class OrderDetailService implements IOrderDetail{
     public List<OrderDetail> getAllOrderDetails() {
         return orderDetailRepository.findAll();
     }
-
+    @Transactional
     @Override
     public OrderDetail createOrderDetail(OrderDetailDTO orderDetailDTO) {
         OrderDetail orderDetail = OrderDetail.builder()
@@ -42,7 +43,7 @@ public class OrderDetailService implements IOrderDetail{
                 () -> new DataNotFoundException("not found order detail")
         );
     }
-
+    @Transactional
     @Override
     public OrderDetail updateOrderDetail(Long id, OrderDetailDTO orderDetailDTO) {
         OrderDetail orderDetail = orderDetailRepository.findById(id).get();
@@ -55,7 +56,7 @@ public class OrderDetailService implements IOrderDetail{
         return orderDetailRepository.save(orderDetail);
 
     }
-
+    @Transactional
     @Override
     public void deleteOrderDetail(Long id) {
         orderDetailRepository.deleteById(id);
