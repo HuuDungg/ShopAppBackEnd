@@ -38,8 +38,8 @@ public class ProductController {
 
     @GetMapping("/getAllProduct")
     public ResponseEntity<ProductlistResponse> getAllProduct(
-            @RequestParam("page") int page,
-            @RequestParam("limit") int limit
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "limit", defaultValue = "10") int limit
             ) {
 
         PageRequest pageRequest = PageRequest.of(

@@ -22,6 +22,10 @@ public class SecurityConfig {
 
     private final UserRepository userRepository;
 
+
+    String hoVaTen = "Tran Huu Dung";
+
+
     //set up username
     @Bean
     public UserDetailsService userDetailsService(){
