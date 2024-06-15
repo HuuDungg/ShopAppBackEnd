@@ -11,5 +11,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsById(Long id);
     //dung de phan trang
     Page<Product> findAll(Pageable pageable);
-
+    Page<Product> findByCategoryId(Pageable pageable, Long categoryId);
 }

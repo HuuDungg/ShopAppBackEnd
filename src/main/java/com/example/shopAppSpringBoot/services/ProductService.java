@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -95,6 +97,17 @@ public class ProductService implements IProductService{
 
     }
 
+    @Override
+    public List<Product> findByIds(List<Long> ids) {
+        List<Product> listProduct = new ArrayList<>();
+        for (Long id: ids){
+            Product product = productRepository.findById(id).get();
+            listProduct.add(product);
+        }
+
+        return listProduct;
+    }
+
     @Transactional
     @Override
     public void deleteProduct(Long id) {
@@ -113,6 +126,25 @@ public class ProductService implements IProductService{
                            .description(product.getDescription())
                             .categoryId(product.getCategoryId().getId())
                            .build();
+                    productResponse.setCreatedAt(product.getCreatedAt());
+                    productResponse.setUpdatedAt(product.getUpdatedAt());
+                    return productResponse;
+                }
+        );
+    }
+
+    @Override
+    public Page<ProductResponse> getByCategoryId(PageRequest pageRequest, Long categoryId) {
+        return productRepository.findByCategoryId(pageRequest, categoryId).map(
+                product -> {
+                    ProductResponse productResponse = ProductResponse.builder()
+                            .id(product.getId())
+                            .name(product.getName())
+                            .price(product.getPrice())
+                            .thumbnail(product.getThumbnail())
+                            .description(product.getDescription())
+                            .categoryId(product.getCategoryId().getId())
+                            .build();
                     productResponse.setCreatedAt(product.getCreatedAt());
                     productResponse.setUpdatedAt(product.getUpdatedAt());
                     return productResponse;
